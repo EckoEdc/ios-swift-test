@@ -8,8 +8,15 @@
 
 import Foundation
 
+enum NotesViewModelDelegateEventType {
+    case insert
+    case delete
+    case edit
+}
+
 protocol NotesViewModelDelegate: class {
     func onDataUpdate()
+    func onUpdate(atIndex index: Int, eventType: NotesViewModelDelegateEventType)
 }
 
 class NotesViewModel {
@@ -37,16 +44,39 @@ class NotesViewModel {
     //MARK: - Getters
     
     func getText(forIndex index: Int) -> String? {
-        guard index <= notesList.count else {
+        guard index >= 0, index < notesList.count else {
+            print(notesList.count)
             return nil
         }
         return notesList[index].text
     }
     
     func getDate(forIndex index: Int) -> Date? {
-        guard index <= notesList.count else {
+        guard index >= 0, index < notesList.count else {
             return nil
         }
         return notesList[index].dateOfCreation
+    }
+    
+    //MARK: CRUD
+    func add(withText text: String) {
+        notesList.append(NoteModel(withText: text))
+        self.delegate?.onUpdate(atIndex: notesList.count-1, eventType: .insert)
+    }
+    
+    func delete(atIndex index: Int) {
+        guard index >= 0, index < notesList.count else {
+            return
+        }
+        notesList.remove(at: index)
+        self.delegate?.onUpdate(atIndex: index, eventType: .delete)
+    }
+    
+    func edit(atIndex index: Int, withText text: String) {
+        guard index >= 0, index < notesList.count else {
+            return
+        }
+        notesList[index].text = text
+        self.delegate?.onUpdate(atIndex: index, eventType: .edit)
     }
 }

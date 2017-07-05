@@ -11,6 +11,8 @@ import XCTest
 
 class TestAppTests: XCTestCase {
     
+    let vm = NotesViewModel()
+    
     override func setUp() {
         super.setUp()
     }
@@ -19,7 +21,7 @@ class TestAppTests: XCTestCase {
         super.tearDown()
     }
     
-    func testMockDataSource() {
+    func test1MockDataSource() {
         
         let expec = expectation(description: "Get all notes")
         
@@ -32,5 +34,22 @@ class TestAppTests: XCTestCase {
             }
         }
         waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func test2AddDataSource() {
+        let count = vm.count
+        vm.add(withText: "Test")
+        XCTAssertEqual(vm.count, count+1)
+    }
+    
+    func test3EditDataSource() {
+        vm.edit(atIndex: 1, withText: "Test")
+        XCTAssertEqual(vm.getText(forIndex: 1), "Test")
+    }
+    
+    func test4DeleteDataSource() {
+        let count = vm.count
+        vm.delete(atIndex: 0)
+        XCTAssertEqual(vm.count, count-1)
     }
 }

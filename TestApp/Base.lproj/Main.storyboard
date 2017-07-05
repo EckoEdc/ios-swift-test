@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="17A291m" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ywK-5K-w3C">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="17A291m" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="A3K-QC-4zp">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Note View Controller-->
+        <!--Notes-->
         <scene sceneID="lgF-x7-ehp">
             <objects>
                 <tableViewController id="ywK-5K-w3C" customClass="NoteViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -22,10 +23,84 @@
                             <outlet property="delegate" destination="ywK-5K-w3C" id="fGC-3F-JU2"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Notes" id="Bbj-PW-pvh">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="Mop-UR-3h0">
+                            <connections>
+                                <segue destination="z96-N4-gTz" kind="show" identifier="AddSegue" id="UJF-Ub-GIn"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="z96-N4-gTz" kind="show" identifier="EditSegue" id="x2z-Wk-ybP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vjv-4H-pd6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="34" y="-31"/>
+            <point key="canvasLocation" x="972" y="-31.03448275862069"/>
+        </scene>
+        <!--Add-->
+        <scene sceneID="ErL-jj-IL8">
+            <objects>
+                <viewController id="z96-N4-gTz" customClass="EditViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="HzO-aN-1Cj"/>
+                        <viewControllerLayoutGuide type="bottom" id="mgo-1v-VHs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jfI-NT-3s9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="oGK-lP-wjB">
+                                <rect key="frame" x="16" y="64" width="343" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration" label="Note Text Field"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="mgo-1v-VHs" firstAttribute="top" secondItem="oGK-lP-wjB" secondAttribute="bottom" id="CSh-1o-Wej"/>
+                            <constraint firstItem="oGK-lP-wjB" firstAttribute="leading" secondItem="jfI-NT-3s9" secondAttribute="leadingMargin" id="DoF-fH-wJF"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="oGK-lP-wjB" secondAttribute="trailing" id="rGx-1D-frm"/>
+                            <constraint firstItem="oGK-lP-wjB" firstAttribute="top" secondItem="HzO-aN-1Cj" secondAttribute="bottom" id="sgn-ri-LWD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Add" id="i8J-My-7Bg">
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="5cf-B8-Mmw">
+                            <connections>
+                                <action selector="onDoneTapped:" destination="z96-N4-gTz" id="FFv-KF-n6h"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="noteTextView" destination="oGK-lP-wjB" id="u4k-Dh-2u1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nx4-fN-d6g" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1705" y="-31"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="PHm-qx-Lk0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="A3K-QC-4zp" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="iSI-Sz-rQL">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="ywK-5K-w3C" kind="relationship" relationship="rootViewController" id="HSV-4e-WvP"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fjh-vf-tSR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="32.799999999999997" y="-31.03448275862069"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="x2z-Wk-ybP"/>
+    </inferredMetricsTieBreakers>
 </document>
