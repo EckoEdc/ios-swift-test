@@ -113,7 +113,14 @@ extension NoteViewController: NotesViewModelDelegate {
         
         self.tableView.endUpdates()
     }
+    
+    func onError(error: Error) {
+        let alert = UIAlertController(title: "Error", message: String(describing: error), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
+
 //MARK: - UISearchResultsUpdating
 extension NoteViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {

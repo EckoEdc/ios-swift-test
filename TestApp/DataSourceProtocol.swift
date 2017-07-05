@@ -10,4 +10,23 @@ import Foundation
 
 protocol DataSourceProtocol {
     func getAllNotes(onComplete: @escaping ([NoteModel], Error?) -> ())
+    func add(_ note: NoteModel) -> Error?
+    func edit(_ note: NoteModel, withText text: String) -> Error?
+    func delete(_ note: NoteModel) -> Error?
 }
+
+extension DataSourceProtocol {
+    
+    func add(_ note: NoteModel) -> Error? {
+        return nil
+    }
+    
+    func edit(_ note: NoteModel, withText text: String) -> Error? {
+        return nil
+    }
+    
+    func delete(_ note: NoteModel) -> Error? {
+        return nil
+    }
+}
+

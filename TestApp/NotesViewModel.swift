@@ -17,6 +17,7 @@ enum NotesViewModelDelegateEventType {
 protocol NotesViewModelDelegate: class {
     func onDataUpdate()
     func onUpdate(atIndex index: Int, eventType: NotesViewModelDelegateEventType)
+    func onError(error: Error)
 }
 
 class NotesViewModel {
@@ -25,6 +26,7 @@ class NotesViewModel {
     
     private var notesList: [NoteModel] = []
     private var filteredNotesList: [NoteModel]?
+    private var dataSource: DataSourceProtocol
     
     weak var delegate: NotesViewModelDelegate?
     
@@ -40,7 +42,8 @@ class NotesViewModel {
     //MARK: - Initializer
     
     init() {
-        NoteMockSource().getAllNotes { (notesList, error) in
+        dataSource = NoteCoreDataSource()
+        dataSource.getAllNotes { (notesList, error) in
             self.notesList = notesList
             self.delegate?.onDataUpdate()
         }
@@ -51,7 +54,6 @@ class NotesViewModel {
     func getText(forIndex index: Int) -> String? {
         let notesList = filteredNotesList ?? self.notesList
         guard index >= 0, index < notesList.count else {
-            print(notesList.count)
             return nil
         }
         return notesList[index].text
@@ -66,28 +68,44 @@ class NotesViewModel {
     }
     
     //MARK: - CRUD
+    
     func add(withText text: String) {
-        notesList.append(NoteModel(withText: text))
-        self.delegate?.onUpdate(atIndex: notesList.count-1, eventType: .insert)
+        let note = NoteModel(withText: text)
+        if let error = dataSource.add(note) {
+           self.delegate?.onError(error: error)
+        } else {
+            notesList.append(note)
+            self.delegate?.onUpdate(atIndex: notesList.count-1, eventType: .insert)
+        }
     }
     
     func delete(atIndex index: Int) {
         guard index >= 0, index < notesList.count else {
             return
         }
-        notesList.remove(at: index)
-        self.delegate?.onUpdate(atIndex: index, eventType: .delete)
+        if let error = dataSource.delete(notesList[index]) {
+            self.delegate?.onError(error: error)
+        } else {
+            notesList.remove(at: index)
+            self.delegate?.onUpdate(atIndex: index, eventType: .delete)
+        }
     }
     
     func edit(atIndex index: Int, withText text: String) {
         guard index >= 0, index < notesList.count else {
             return
         }
-        notesList[index].text = text
-        self.delegate?.onUpdate(atIndex: index, eventType: .edit)
+        let note = notesList[index]
+        if let error = dataSource.edit(note, withText: text) {
+            self.delegate?.onError(error: error)
+        } else {
+            note.text = text
+            self.delegate?.onUpdate(atIndex: index, eventType: .edit)
+        }
     }
     
     //MARK: - Filter
+    
     func filter(contains text: String) {
         if text.isEmpty {
             filteredNotesList = nil
