@@ -32,18 +32,20 @@ class NoteViewController: UITableViewController {
     //MARK: UITableViewDataSource
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return notesViewModel.section
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notesViewModel.count
+        return notesViewModel.count(section: section)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteCell") as!NoteTableViewCell
         
-        cell.configure(text: notesViewModel.getText(forIndex: indexPath.row),
-                       date: notesViewModel.getDate(forIndex: indexPath.row))
+        cell.configure(text: notesViewModel.getText(forIndex: indexPath.row,
+                                                    section: indexPath.section),
+                       date: notesViewModel.getDate(forIndex: indexPath.row,
+                                                    section: indexPath.section))
         return cell
     }
     
@@ -51,11 +53,15 @@ class NoteViewController: UITableViewController {
         return true
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return notesViewModel.sectionHeaderTitle(for: section)
+    }
+    
     //MARK: - UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, index in
-            self.notesViewModel.delete(atIndex: index.row)
+            self.notesViewModel.delete(atIndex: index.row, section: indexPath.section)
         }
         
         return [delete]
@@ -80,6 +86,7 @@ class NoteViewController: UITableViewController {
             let vc = segue.destination as! EditViewController
             vc.notesViewModel = self.notesViewModel
             vc.selectedIndex = tableView.indexPathForSelectedRow!.row
+            vc.selectedSection = tableView.indexPathForSelectedRow!.section
         default:
             break
         }
@@ -96,19 +103,19 @@ extension NoteViewController: NotesViewModelDelegate {
         }
     }
     
-    func onUpdate(atIndex index: Int, eventType: NotesViewModelDelegateEventType) {
+    func onUpdate(atIndex index: (Int, Int), eventType: NotesViewModelDelegateEventType) {
         
         self.tableView.beginUpdates()
         
         switch eventType {
         case .insert:
-            self.tableView.insertRows(at: [IndexPath(row: index, section: 0)],
+            self.tableView.insertRows(at: [IndexPath(row: index.0, section: index.1)],
                                       with: .automatic)
         case .delete:
-            self.tableView.deleteRows(at:  [IndexPath(row: index, section: 0)],
+            self.tableView.deleteRows(at:  [IndexPath(row: index.0, section: index.1)],
                                       with: .automatic)
         case .edit:
-            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+            self.tableView.reloadRows(at: [IndexPath(row: index.0, section: index.1)], with: .automatic)
         }
         
         self.tableView.endUpdates()

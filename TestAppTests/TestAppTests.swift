@@ -37,19 +37,25 @@ class TestAppTests: XCTestCase {
     }
     
     func test2AddDataSource() {
-        let count = vm.count
-        vm.add(withText: "Test")
-        XCTAssertEqual(vm.count, count+1)
+        for section in 0..<vm.section {
+            let count = vm.count(section: section)
+            vm.add(withText: "Test", section: section)
+            XCTAssertEqual(vm.count(section: section), count+1)
+        }
     }
     
     func test3EditDataSource() {
-        vm.edit(atIndex: 1, withText: "Test")
-        XCTAssertEqual(vm.getText(forIndex: 1), "Test")
+        for section in 0..<vm.section {
+            vm.edit(atIndex: 1, withText: "Test", section: section)
+            XCTAssertEqual(vm.getText(forIndex: 1, section: section), "Test")
+        }
     }
     
     func test4DeleteDataSource() {
-        let count = vm.count
-        vm.delete(atIndex: 0)
-        XCTAssertEqual(vm.count, count-1)
+        for section in 0..<vm.section {
+            let count = vm.count(section: section)
+            vm.delete(atIndex: 0, section: section)
+            XCTAssertEqual(vm.count(section: section), count-1)
+        }
     }
 }

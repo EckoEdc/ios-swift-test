@@ -17,13 +17,14 @@ class EditViewController: UIViewController {
     //MARK: - Properties
     var notesViewModel: NotesViewModel!
     var selectedIndex: Int = -1
+    var selectedSection: Int = -1
     
     //MARK: - UIView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if selectedIndex >= 0 {
-            self.noteTextView.text = notesViewModel.getText(forIndex: selectedIndex)
+        if selectedIndex >= 0 && selectedSection >= 0 {
+            self.noteTextView.text = notesViewModel.getText(forIndex: selectedIndex, section: selectedSection)
         }
     }
     
@@ -40,10 +41,11 @@ class EditViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
             return
         }
-        if selectedIndex >= 0 {
-            notesViewModel.edit(atIndex: selectedIndex, withText: noteTextView.text)
+        if selectedIndex >= 0 && selectedSection >= 0 {
+            notesViewModel.edit(atIndex: selectedIndex, withText: noteTextView.text, section: selectedSection)
         } else {
-            notesViewModel.add(withText: noteTextView.text)
+            //Default to coredata 
+            notesViewModel.add(withText: noteTextView.text, section: 1)
         }
         self.navigationController?.popViewController(animated: true)
     }
