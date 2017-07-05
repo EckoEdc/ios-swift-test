@@ -11,6 +11,7 @@ import Foundation
 class NoteMockSource: DataSourceProtocol {
     
     //MARK: - Getters
+    
     func getAllNotes(onComplete: @escaping ([NoteModel], Error?) -> ()) {
         
         DispatchQueue.global(qos: .background).async {
@@ -32,8 +33,7 @@ class NoteMockSource: DataSourceProtocol {
                     onComplete(notesList, nil)
                 }
             }
-                catch {
-                print(error)
+            catch {
                 onComplete([], error)
             }
         }
