@@ -24,11 +24,15 @@ class TestAppUITests: XCTestCase {
         super.tearDown()
     }
     
-    func test1AddTask() {
+    func addTask(withText text: String) {
         app.navigationBars["Notes"].buttons["Add"].tap()
         let textField = app.textViews["Note Text Field"]
-        textField.typeText("Test")
+        textField.typeText(text)
         app.navigationBars["Add"].buttons["Done"].tap()
+    }
+    
+    func test1AddTask() {
+        addTask(withText: "Test")
         
         XCTAssert(app.tables.cells.count >= 1)
     }
@@ -45,7 +49,17 @@ class TestAppUITests: XCTestCase {
         XCTAssert(app.tables.cells.staticTexts["Test"].exists)
     }
     
-    func test3DeleteTask() {
+    func test3SearchNotes() {
+        addTask(withText: "banana")
+        addTask(withText: "Banana")
+        addTask(withText: "Bandit")
+        addTask(withText: "Bob")
+        app.tables.searchFields["Search"].tap()
+        app.searchFields["Search"].typeText("Ban")
+        XCTAssertEqual(app.tables.cells.count, 3)
+    }
+    
+    func test4DeleteTask() {
         
         while app.tables.cells.count > 0 {
             let cell = app.tables.cells.allElementsBoundByIndex[0]

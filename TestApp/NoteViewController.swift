@@ -11,6 +11,7 @@ class NoteViewController: UITableViewController {
     //MARK: - Properties
     
     var notesViewModel = NotesViewModel()
+    let searchController = UISearchController(searchResultsController: nil)
 
     //MARK: - UIView
     
@@ -22,6 +23,10 @@ class NoteViewController: UITableViewController {
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 140
+        
+        searchController.searchResultsUpdater = self
+        definesPresentationContext = true
+        tableView.tableHeaderView = searchController.searchBar
     }
     
     //MARK: UITableViewDataSource
@@ -107,6 +112,12 @@ extension NoteViewController: NotesViewModelDelegate {
         }
         
         self.tableView.endUpdates()
+    }
+}
+//MARK: - UISearchResultsUpdating
+extension NoteViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        notesViewModel.filter(contains: searchController.searchBar.text!)
     }
 }
 
